@@ -175,7 +175,7 @@ diagnosticar(Paciente) :-
     nl,
     % 4. Diagnóstico final
     ( diagnostico_final(Paciente, DiagnosticoFinal) ->
-        format('Diagnóstico final: ~w~n', [DiagnosticoFinal]),
+        format('Diagnostico final: ~w~n', [DiagnosticoFinal]),
         % Severidad
         severidad(Paciente, DiagnosticoFinal, Sev),
         format('Severidad: ~w~n', [Sev]),
@@ -184,9 +184,9 @@ diagnosticar(Paciente) :-
         format('Tratamiento: ~w~n', [Trat]),
         % Recomendación por riesgo
         recomendacion(Paciente, DiagnosticoFinal, Recomendacion),
-        format('Recomendación: ~w~n', [Recomendacion])
+        format('Recomendacion: ~w~n', [Recomendacion])
     ;
-        writeln('No se pudo obtener un diagnóstico final.')
+        writeln('No se pudo obtener un diagnostico final.')
     ),
     writeln('==============================================='), nl.
 % ==========================================================
@@ -351,8 +351,4 @@ severidad(P, E, 'Moderada') :-
 
 severidad(P, E, 'Leve') :-
     contar_sintomas_confirmados(P, E, C), C = 1, !.
-
-% ==========================================================
-% REPORTE COMPLETO DEL PACIENTE
-% ==========================================================
 

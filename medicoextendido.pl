@@ -189,7 +189,9 @@ diagnosticar(Paciente) :-
         % Recomendación por riesgo
         recomendacion(Paciente, DiagnosticoFinal, Recomendacion),
         format('Recomendacion: ~w~n', [Recomendacion])
+        format('Recomendacion: ~w~n', [Recomendacion])
     ;
+        writeln('No se pudo obtener un diagnostico final.')
         writeln('No se pudo obtener un diagnostico final.')
     ),
     writeln('==============================================='), nl.

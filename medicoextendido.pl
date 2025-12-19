@@ -30,6 +30,14 @@ tiene_sintoma(hipermetropia, vision_borrosa).
 tiene_sintoma(hipermetropia, dolor_ojos).
 tiene_sintoma(hipermetropia, dolor_cabeza).
 
+riesgo_enfermedad(gripe, bajo).
+riesgo_enfermedad(alergia, bajo).
+riesgo_enfermedad(migrana, medio).
+riesgo_enfermedad(resfriado, bajo).
+riesgo_enfermedad(difteria, alto).
+riesgo_enfermedad(escoliosis, medio).
+riesgo_enfermedad(hipermetropia, bajo).
+
 % ==========================================================
 % HECHOS: Tratamientos
 % ==========================================================
@@ -41,6 +49,7 @@ tratamiento(resfriado, 'Liquidos calientes, descongestionantes y vitamina C.').
 tratamiento(difteria,'Antibioticos, reposo, aislamiento y atencion medica inmediata.').
 tratamiento(escoliosis,'Ejercicios posturales, fisioterapia y en casos severos cirugia.').
 tratamiento(hipermetropia,'Uso de lentes correctivos y revision oftalmologica periodica.').
+
 % ==========================================================
 % PREDICADO DINÁMICO
 % ==========================================================
@@ -56,8 +65,22 @@ preguntar_todos_los_sintomas(Paciente) :-
     fail.
 preguntar_todos_los_sintomas(_).
 
+recomendacion(_Paciente, Enfermedad, Texto) :-
+    riesgo_enfermedad(Enfermedad, NivelRiesgo),
+    generar_recomendacion(NivelRiesgo, Enfermedad, Texto).
 
-% Sistema de interacción
+generar_recomendacion(alto, Enfermedad, Texto) :-
+    atomic_list_concat(['La enfermedad', Enfermedad,
+                        'tiene riesgo alto, requiere atención medica inmediata. '], ' ', Texto).
+
+generar_recomendacion(medio, Enfermedad, Texto) :-
+    atomic_list_concat(['La enfermedad', Enfermedad,
+                        'tiene riesgo medio, consulta a tu medico pronto. '], ' ', Texto).
+
+generar_recomendacion(bajo, Enfermedad, Texto) :-
+    atomic_list_concat(['La enfermedad', Enfermedad,
+                        'tiene riesgo bajo, sigue los cuidados habituales.'], ' ', Texto).
+
 pregunta(Paciente, Sintoma) :-
     sintoma(Paciente, Sintoma), !.
 
@@ -73,7 +96,7 @@ pregunta(Paciente, Sintoma) :-
             tratamiento(Enfermedad, T),
             format('Tratamiento recomendado: ~w~n', [T]),
             writeln('=========================='),
-            !, fail  
+            !, fail
         ;
             true
         )
@@ -81,8 +104,9 @@ pregunta(Paciente, Sintoma) :-
         true
     ;
         writeln('Por favor responde solo con si o no.'),
-        pregunta(Paciente, Sintoma)  
+        pregunta(Paciente, Sintoma)
     ).
+
 % ==========================================================
 % Diagnóstico por síntoma exclusivo
 % ==========================================================
@@ -97,19 +121,17 @@ sintoma_exclusivo(Enfermedad, Sintoma) :-
 % ==========================================================
 % Diagnóstico basado en la enfermedad con mayor probabilidad
 % ==========================================================
-diagnostico_mas_probable(Paciente) :-
-    reset_paciente(Paciente),                % Limpiar síntomas previos
-    preguntar_todos_los_sintomas(Paciente), % Preguntar todos los síntomas
 
-    % Obtener todos los síntomas confirmados del paciente
+diagnostico_mas_probable(Paciente) :-
+    reset_paciente(Paciente),
+    preguntar_todos_los_sintomas(Paciente),
+
     findall(S, sintoma(Paciente, S), SintomasConfirmados),
     format('Sintomas confirmados de ~w: ~w~n~n', [Paciente, SintomasConfirmados]),
 
-    % Listar todas las enfermedades únicas
     findall(E, tiene_sintoma(E,_), EnfermedadesDup),
     sort(EnfermedadesDup, Enfermedades),
 
-    % Calcular probabilidades de cada enfermedad
     findall([Porcentaje, Enfermedad],
             (member(E, Enfermedades),
              probabilidad(Paciente, E, Porcentaje),
@@ -117,36 +139,40 @@ diagnostico_mas_probable(Paciente) :-
              Enfermedad = E),
             ProbList),
 
-    % Imprimir todas las probabilidades mayores a 0
     writeln('Probabilidades por enfermedad:'),
     forall(member([P,E], ProbList),
            format('- ~w -> ~2f%%~n', [E,P])),
     nl,
 
-    % Seleccionar la enfermedad con mayor porcentaje
     ( ProbList \= [] ->
-        % Ordenamos de mayor a menor
         sort(0, @>=, ProbList, [[MaxPorc, EnfermedadMax]|_]),
         format('=== DIAGNOSTICO FINAL ===~n'),
         format('El paciente ~w probablemente tiene: ~w (~2f%% de probabilidad)~n', [Paciente, EnfermedadMax, MaxPorc]),
+
         tratamiento(EnfermedadMax, Tratamiento),
         format('Tratamiento recomendado: ~w~n', [Tratamiento]),
+
+        severidad(Paciente, EnfermedadMax, NivelSeveridad),
+        format('Severidad : ~w~n', [NivelSeveridad]),
+
+        recomendacion(Paciente, EnfermedadMax, TextoRecomendacion),
+        format('Recomendacion: ~w~n', [TextoRecomendacion]),
+
         writeln('=========================')
     ;
         writeln('No se detectaron síntomas que permitan un diagnóstico.')
     ).
 
-
 % ==========================================================
 % Probabilidad
 % ==========================================================
+
 probabilidad(Paciente, Enfermedad, Porcentaje) :-
     findall(S, tiene_sintoma(Enfermedad, S), Todos),
     length(Todos, Total),
     findall(S, (tiene_sintoma(Enfermedad, S), sintoma(Paciente, S)), Confirmados),
     length(Confirmados, C),
     ( Total > 0 -> Porcentaje is (C / Total) * 100 ; Porcentaje = 0 ).
-
 
 % ==========================================================
 % DIAGNÓSTICO BÁSICO
@@ -172,6 +198,7 @@ todos_confirmados(Paciente, [S|R]) :-
 % ==========================================================
 % DIAGNÓSTICAR
 % ==========================================================
+
 diagnosticar(Paciente) :-
     diagnostico_completo(Paciente, Enfermedad),
     format("El paciente ~w probablemente tiene ~w.~n", [Paciente, Enfermedad]),
@@ -212,4 +239,3 @@ severidad(P, E, 'Moderada') :-
 
 severidad(P, E, 'Leve') :-
     contar_sintomas_confirmados(P, E, C), C = 1, !.
-

@@ -1,1 +1,1 @@
-diagnostico_mas_probable
+tratamiento

@@ -152,39 +152,77 @@ consulta_familia([Xs,"es","esposa","de",Ys], R) :-
 
 % Saludos
 response(["hola"], ["Hola","como","estas","?"]).
-response(["hola","eliza"], ["Hola","como","estas","?"]).
 response(["buenos","dias"], ["Buenos","dias","como","estas","?"]).
 response(["buenas","tardes"], ["Buenas","tardes","como","estas","?"]).
+response(["hola","eliza"], ["Hola","como","estas","?"]).
+response(["hola","eliza","soy",Nombre],
+         ["Hola",Nombre,"como","estas","?"]).
 
 % Estado de animo
 response(["bien"], ["Me","alegro"]).
-response(["mal"], ["Lamento","que","te","sientas","asi"]).
-response(["me","siento","triste"], ["Quieres","contarme","mas","?"]).
-
-% Diagnostico
+response(["mal"],
+         ["Lamento","que","te","sientas","asi,","por","que","te","sientes","mal","?"]).
+response(["me","siento","mal"], ["Por","que","?"]).
+response(["me","siento","triste"],
+         ["Quieres","contarme","que","te","hace","sentirte","asi","?"]).
 response(["me","siento","enfermo"], iniciar_diagnostico).
 response(["estoy","enfermo"], iniciar_diagnostico).
+response(["ayudame","a","saber","que","enfermedad","tengo"], iniciar_diagnostico).
 
-% Conversacion
-response(["como","estas"], ["Estoy","bien","gracias"]).
-response(["que","haces"], ["Estoy","aqui","para","escucharte"]).
-response(["quien","eres"], ["Soy","Eliza"]).
 
-% Despedida
+% Conversacion general
+response(["como","estas"],
+         ["Estoy","bien","gracias","y","tu","?"]).
+response(["que","haces"],
+         ["Estoy","aqui","para","escucharte"]).
+response(["quien","eres"],
+         ["Soy","Eliza","un","programa","para","conversar","contigo"]).
+response(["que","puedes","hacer"],
+[
+ "Te","puedo","ayudar","a","diagnosticar","enfermedades","como",
+ "gripe,","alergia,","migrana,","resfriado,","difteria,",
+ "escoliosis,","hipermetropia,",
+ "tambien","te","puedo","ayudar","a","localizar","personas",
+ "de","tu","arbol","genealogico",
+ "y","podemos","conversar","un","poco","sobre","los","simpsons"
+]).
+
+% Despedidas
 response(["adios"], ["Adios","espero","haberte","ayudado"]).
 response(["bye"], ["Bye","cuidate"]).
+
+%pedir nombre al paciente
+pedir_nombre_paciente(Nombre) :-
+    writeln("Cual es tu nombre?"),
+    write("> "),
+    read_line_to_string(user_input, Nombre),
+    retractall(paciente_actual(_)),
+    assertz(paciente_actual(Nombre)).
+
+
+
+
+% Diagnostico de enfermedades
+iniciar_diagnostico :-
+    writeln("Entiendo, voy a ayudarte a obtener un diagnostico."),
+    write("Cual es tu nombre? "),
+    read(Nombre),
+    retractall(paciente_actual(_)),
+    assertz(paciente_actual(Nombre)),
+    reset_paciente(Nombre),
+    format("Perfecto ~w responde solo si o no a las preguntas.~n", [Nombre]),
+    diagnosticar(Nombre).
 
 % ======================================
 % EJECUTAR RESPUESTA
 % ======================================
 
 ejecutar_respuesta(iniciar_diagnostico) :-
-    writeln("Voy a ayudarte con el diagnostico."),
-    writeln("Como te llamas?"),
-    read(Nombre),
-    retractall(paciente_actual(_)),
-    assertz(paciente_actual(Nombre)),
-    diagnosticar(Nombre).
+    writeln("Entiendo, voy a ayudarte a obtener un diagnostico."),
+    pedir_nombre_paciente(P),
+    reset_paciente(P),
+    format("Perfecto ~w responde solo si o no a las preguntas.~n", [P]),
+    diagnosticar(P).
 
 ejecutar_respuesta(Lista) :-
     is_list(Lista),

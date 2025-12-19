@@ -1,3 +1,10 @@
+% Para los warnings
+:- discontiguous padre/2.
+:- discontiguous madre/2.
+:- discontiguous hermano/2.
+:- discontiguous hermana/2.
+:- discontiguous esposos/2.
+
 % ======================================
 % HECHOS
 % ======================================

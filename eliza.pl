@@ -7,6 +7,7 @@
 
 :- consult('medicoextendido.pl').
 :- consult('arbolGenealogico.pl').
+:- consult('losSimpson.pl').
 
 paciente_actual(paciente1).
 
@@ -26,7 +27,6 @@ response(Tokens, Respuesta) :-
     consulta_familia(Tokens, Respuesta),
     !.
 
-% ---------- PADRE ----------
 consulta_familia([Xs,"es","padre","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -35,7 +35,6 @@ consulta_familia([Xs,"es","padre","de",Ys], R) :-
       ;  format(string(R), "~w no es padre de ~w", [X,Y])
     ).
 
-% ---------- MADRE ----------
 consulta_familia([Xs,"es","madre","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -44,7 +43,6 @@ consulta_familia([Xs,"es","madre","de",Ys], R) :-
       ;  format(string(R), "~w no es madre de ~w", [X,Y])
     ).
 
-% ---------- HIJO ----------
 consulta_familia([Xs,"es","hijo","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -53,7 +51,6 @@ consulta_familia([Xs,"es","hijo","de",Ys], R) :-
       ;  format(string(R), "~w no es hijo de ~w", [X,Y])
     ).
 
-% ---------- HERMANO ----------
 consulta_familia([Xs,"es","hermano","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -62,7 +59,6 @@ consulta_familia([Xs,"es","hermano","de",Ys], R) :-
       ;  format(string(R), "~w no es hermano de ~w", [X,Y])
     ).
 
-% ---------- HERMANA ----------
 consulta_familia([Xs,"es","hermana","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -71,7 +67,6 @@ consulta_familia([Xs,"es","hermana","de",Ys], R) :-
       ;  format(string(R), "~w no es hermana de ~w", [X,Y])
     ).
 
-% ---------- ABUELO ----------
 consulta_familia([Xs,"es","abuelo","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -80,7 +75,6 @@ consulta_familia([Xs,"es","abuelo","de",Ys], R) :-
       ;  format(string(R), "~w no es abuelo de ~w", [X,Y])
     ).
 
-% ---------- ABUELA ----------
 consulta_familia([Xs,"es","abuela","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -89,7 +83,6 @@ consulta_familia([Xs,"es","abuela","de",Ys], R) :-
       ;  format(string(R), "~w no es abuela de ~w", [X,Y])
     ).
 
-% ---------- NIETO ----------
 consulta_familia([Xs,"es","nieto","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -98,7 +91,6 @@ consulta_familia([Xs,"es","nieto","de",Ys], R) :-
       ;  format(string(R), "~w no es nieto de ~w", [X,Y])
     ).
 
-% ---------- TIO ----------
 consulta_familia([Xs,"es","tio","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -107,7 +99,6 @@ consulta_familia([Xs,"es","tio","de",Ys], R) :-
       ;  format(string(R), "~w no es tio de ~w", [X,Y])
     ).
 
-% ---------- TIA ----------
 consulta_familia([Xs,"es","tia","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -116,7 +107,6 @@ consulta_familia([Xs,"es","tia","de",Ys], R) :-
       ;  format(string(R), "~w no es tia de ~w", [X,Y])
     ).
 
-% ---------- PRIMO ----------
 consulta_familia([Xs,"es","primo","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -125,7 +115,6 @@ consulta_familia([Xs,"es","primo","de",Ys], R) :-
       ;  format(string(R), "~w no es primo de ~w", [X,Y])
     ).
 
-% ---------- ESPOSO ----------
 consulta_familia([Xs,"es","esposo","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -134,7 +123,6 @@ consulta_familia([Xs,"es","esposo","de",Ys], R) :-
       ;  format(string(R), "~w no es esposo de ~w", [X,Y])
     ).
 
-% ---------- ESPOSA ----------
 consulta_familia([Xs,"es","esposa","de",Ys], R) :-
     atom_string(X, Xs),
     atom_string(Y, Ys),
@@ -143,14 +131,83 @@ consulta_familia([Xs,"es","esposa","de",Ys], R) :-
       ;  format(string(R), "~w no es esposa de ~w", [X,Y])
     ).
 
-
-
+consulta_familia([Xs,"es","amigo","de",Ys], R) :-
+    atom_string(X, Xs),
+    atom_string(Y, Ys),
+    ( amigo(X,Y)
+      -> format(string(R), "~w si es amigo de ~w", [X,Y])
+      ;  format(string(R), "~w no es amigo de ~w", [X,Y])
+    ).
 
 % ======================================
-% RESPUESTAS NORMALES (ELIZA)
+% LOS SIMPSON
 % ======================================
 
-% Saludos
+consulta_familia([Xs,"es","companero","de",Ys], R) :-
+    atom_string(X, Xs),
+    atom_string(Y, Ys),
+    ( companero(X,Y)
+      -> format(string(R), "~w si es companero de ~w", [X,Y])
+      ;  format(string(R), "~w no es companero de ~w", [X,Y])
+    ).
+
+consulta_familia([Xs,"es","vecino","de",Ys], R) :-
+    atom_string(X, Xs),
+    atom_string(Y, Ys),
+    ( vecino(X,Y)
+      -> format(string(R), "~w si es vecino de ~w", [X,Y])
+      ;  format(string(R), "~w no es vecino de ~w", [X,Y])
+    ).
+
+consulta_familia(["en","que","trabaja",Xs], R) :-
+    atom_string(X, Xs),
+    ( trabaja_en(X, T)
+      -> format(string(R), "~w trabaja en ~w", [X, T])
+      ;  format(string(R), "No se en que trabaja ~w", [X])
+    ).
+
+consulta_familia(["cual","es","la","edad","de",Xs], R) :-
+    atom_string(X, Xs),
+    ( edad(X, E)
+      -> format(string(R), "~w tiene ~w anos", [X, E])
+      ;  format(string(R), "No se la edad de ~w", [X])
+    ).
+
+consulta_familia(["cuando","salieron","los","simpson"], R) :-
+    estreno(los_simpson, F),
+    format(string(R), "Los Simpson se estrenaron el ~w", [F]).
+
+consulta_familia(["cuantas","temporadas","tienen","los","simpson"], R) :-
+    temporadas(los_simpson, F),
+    format(string(R), "Los Simpson tienen ~w temporadas", [F]).
+
+consulta_familia(["quien","creo","los","simpson"], R) :-
+    creador(los_simpson, C),
+    format(string(R), "Los Simpson fueron creados por ~w", [C]).
+
+consulta_familia(["en","que","canal","se","transmiten","los","simpson"], R) :-
+    cadena(los_simpson, Canal),
+    format(string(R), "Los Simpson se transmiten en ~w", [Canal]).
+
+consulta_familia(["de","que","trata","los","simpson"], 
+"Los Simpson son una serie animada que satiriza la vida de una familia estadounidense").
+
+consulta_familia(["donde","viven","los","simpson"], R) :-
+    ciudad_ficticia(los_simpson, C),
+    format(string(R), "Los Simpson viven en la ciudad ficticia de ~w", [C]).
+
+consulta_familia(["de","que","pais","son","los","simpson"], R) :-
+    pais_origen(los_simpson, P),
+    format(string(R), "Los Simpson son de ~w", [P]).
+
+consulta_familia(["cual","es","el","genero","de","los","simpson"], R) :-
+    genero(los_simpson, G),
+    format(string(R), "El genero de Los Simpson es ~w", [G]).
+
+% ======================================
+% RESPUESTAS DIRECTAS
+% ======================================
+
 response(["hola"], ["Hola","como","estas","?"]).
 response(["buenos","dias"], ["Buenos","dias","como","estas","?"]).
 response(["buenas","tardes"], ["Buenas","tardes","como","estas","?"]).
@@ -158,7 +215,6 @@ response(["hola","eliza"], ["Hola","como","estas","?"]).
 response(["hola","eliza","soy",Nombre],
          ["Hola",Nombre,"como","estas","?"]).
 
-% Estado de animo
 response(["bien"], ["Me","alegro"]).
 response(["mal"],
          ["Lamento","que","te","sientas","asi,","por","que","te","sientes","mal","?"]).
@@ -169,8 +225,6 @@ response(["me","siento","enfermo"], iniciar_diagnostico).
 response(["estoy","enfermo"], iniciar_diagnostico).
 response(["ayudame","a","saber","que","enfermedad","tengo"], iniciar_diagnostico).
 
-
-% Conversacion general
 response(["como","estas"],
          ["Estoy","bien","gracias","y","tu","?"]).
 response(["que","haces"],
@@ -187,11 +241,14 @@ response(["que","puedes","hacer"],
  "y","podemos","conversar","un","poco","sobre","los","simpsons"
 ]).
 
-% Despedidas
 response(["adios"], ["Adios","espero","haberte","ayudado"]).
 response(["bye"], ["Bye","cuidate"]).
 
-%pedir nombre al paciente
+
+% ======================================
+% MEDICO EXTENDIDO
+% ======================================
+
 pedir_nombre_paciente(Nombre) :-
     writeln("Cual es tu nombre?"),
     write("> "),
@@ -199,10 +256,6 @@ pedir_nombre_paciente(Nombre) :-
     retractall(paciente_actual(_)),
     assertz(paciente_actual(Nombre)).
 
-
-
-
-% Diagnostico de enfermedades
 iniciar_diagnostico :-
     writeln("Entiendo, voy a ayudarte a obtener un diagnostico."),
     write("Cual es tu nombre? "),

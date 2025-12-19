@@ -264,7 +264,8 @@ iniciar_diagnostico :-
     assertz(paciente_actual(Nombre)),
     reset_paciente(Nombre),
     format("Perfecto ~w responde solo si o no a las preguntas.~n", [Nombre]),
-    diagnosticar(Nombre).
+    diagnostico_mas_probable(Nombre).
+    
 
 % ======================================
 % EJECUTAR RESPUESTA
@@ -275,7 +276,7 @@ ejecutar_respuesta(iniciar_diagnostico) :-
     pedir_nombre_paciente(P),
     reset_paciente(P),
     format("Perfecto ~w responde solo si o no a las preguntas.~n", [P]),
-    diagnosticar(P).
+    diagnostico_mas_probable(P).
 
 ejecutar_respuesta(Lista) :-
     is_list(Lista),

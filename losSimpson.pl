@@ -6,8 +6,6 @@
 :- discontiguous companero/2.
 :- discontiguous vecino/2.
 
-
-
 % ======================================
 % HECHOS
 % ======================================
